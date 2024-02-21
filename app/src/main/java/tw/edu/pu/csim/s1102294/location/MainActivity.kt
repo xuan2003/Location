@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.*
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -74,24 +73,7 @@ class MainActivity : AppCompatActivity() {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        locationManager?.requestLocationUpdates(
+        val requestLocationUpdates = locationManager?.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
             1000,
             1f,
@@ -100,33 +82,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showLocation(location: Location) {
+        // 顯示位置信息
         val latitude = location.latitude
         val longitude = location.longitude
-
-        // 將經緯度轉換為地址
-        val address = getAddressFromLocation(latitude, longitude)
-
-        // 顯示地址信息
-        textViewLocation.text = "地址: $address"
-    }
-
-    private fun getAddressFromLocation(latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(this, Locale.getDefault())
-        try {
-            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-
-            if (addresses != null && addresses.isNotEmpty()) {
-                val address: String = addresses[0].getAddressLine(0)
-                Log.d("Address", "Address: $address")
-                return address
-            } else {
-                Log.d("Address", "No address found")
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e("Address", "Error getting address", e)
-        }
-        return "無法取得地址"
+        textViewLocation.text = "緯度: $latitude, 經度: $longitude"
     }
 
     override fun onRequestPermissionsResult(
