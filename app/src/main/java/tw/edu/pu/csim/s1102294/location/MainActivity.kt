@@ -85,7 +85,32 @@ class MainActivity : AppCompatActivity() {
         // 顯示位置信息
         val latitude = location.latitude
         val longitude = location.longitude
-        textViewLocation.text = "緯度: $latitude, 經度: $longitude"
+
+        data class CityRange(val name: String, val minLatitude: Double, val maxLatitude: Double, val minLongitude: Double, val maxLongitude: Double)
+
+        val cityRanges = listOf(
+            CityRange("臺北市", 25.0, 25.2, 121.5, 121.6),
+            CityRange("新北市", 24.8, 25.3, 121.3, 122.0),
+            CityRange("桃園市", 24.7, 25.1, 121.0, 121.4),
+            CityRange("臺中市", 24.0, 24.4, 120.5, 121.0),
+            CityRange("臺南市", 22.9, 23.1, 120.0, 120.3),
+            CityRange("高雄市", 22.5, 23.0, 120.2, 120.5),
+            CityRange("基隆市", 25.1, 25.2, 121.7, 121.8),
+            CityRange("新竹市", 24.7, 24.9, 120.9, 121.1),
+            CityRange("嘉義市", 23.4, 23.5, 120.4, 120.5)
+            // 可以根據需要添加更多的縣市範圍
+        )
+
+//        textViewLocation.text = "緯度: $latitude, 經度: $longitude"
+        val city = cityRanges.find {
+            latitude in it.minLatitude..it.maxLatitude && longitude in it.minLongitude..it.maxLongitude
+        }?.name ?: "未知地點"
+
+        textViewLocation.text = if (city == "未知地點") {
+            "緯度: $latitude, 經度: $longitude"
+        } else {
+            city
+        }
     }
 
     override fun onRequestPermissionsResult(
